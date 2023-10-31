@@ -1,9 +1,20 @@
 use std::{
-    io::Write,
-    process::{Command, Stdio},
+    io::{self, Write},
+    process::{Child, ChildStdin, Command, Stdio},
 };
 
+pub fn run_with_output<T: Into<String>>(fzf: Fzf, items: Vec<T>) -> Option<String> {
+    let mut fzf = fzf;
+    fzf.run().ok()?;
+    for item in items {
+        fzf.add_item(item).ok()?;
+    }
+    fzf.output()
+}
+
 pub struct Fzf {
+    instance: Option<Child>,
+    stdin: Option<ChildStdin>,
     prompt: String,
     layout: FzfLayout,
 }
@@ -13,16 +24,7 @@ impl Fzf {
         FzfBuilder::default()
     }
 
-    /// Runs `fzf` and returns the result of the user's selection
-    ///
-    /// # Parameters
-    ///
-    /// - `items` The items to select from using fzf
-    ///
-    /// # Returns
-    ///
-    /// An option containg what the user selected, or `None` if either the user exited fzf
-    pub fn run_with_output<T: Into<String>>(&self, items: Vec<T>) -> Option<String> {
+    pub fn run(&mut self) -> io::Result<()> {
         let args = [
             format!("--prompt={}", self.prompt),
             format!("--layout={}", self.layout.to_string()),
@@ -32,22 +34,30 @@ impl Fzf {
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .args(args)
-            .spawn()
+            .spawn()?;
+
+        self.stdin = fzf.stdin.take();
+        self.instance = Some(fzf);
+        Ok(())
+    }
+
+    pub fn add_item<T: Into<String>>(&mut self, item: T) -> io::Result<()> {
+        // Trimming the string to make sure we don't double up on newline characters
+        let mut item = item.into().trim().to_string();
+        item.push('\n');
+        self.stdin
+            .as_mut()
+            .expect("Failed to unwrap stdin")
+            .write_all(item.as_bytes())?;
+        Ok(())
+    }
+
+    pub fn output(self) -> Option<String> {
+        let output = self
+            .instance
+            .expect("Failed to unwrap instance")
+            .wait_with_output()
             .ok()?;
-
-        let mut stdin = fzf.stdin.take()?;
-
-        let mut input: String = items
-            .into_iter()
-            .map(|x| x.into())
-            .collect::<Vec<String>>()
-            .join("\n");
-        input.push('\n'); // So that fzf recognises the last item
-
-        stdin.write_all(input.as_bytes()).ok()?;
-
-        let output = fzf.wait_with_output().ok()?;
-
         Some(String::from_utf8_lossy(&output.stdout).trim().to_string())
     }
 }
@@ -102,6 +112,8 @@ impl FzfBuilder {
     pub fn build(&self) -> Fzf {
         let builder = self.clone();
         Fzf {
+            instance: None,
+            stdin: None,
             prompt: builder.prompt,
             layout: builder.layout,
         }
