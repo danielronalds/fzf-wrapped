@@ -112,6 +112,12 @@ impl Fzf {
     }
 }
 
+impl Default for Fzf {
+    fn default() -> Self {
+        FzfBuilder::default().build()
+    }
+}
+
 #[derive(Clone)]
 /// An Enum to represent the possible layouts to display `fzf` with
 pub enum Layout {
