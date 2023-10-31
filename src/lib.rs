@@ -28,6 +28,7 @@ pub struct Fzf {
 
     // Options
     prompt: String,
+    pointer: String,
     layout: Layout,
 }
 
@@ -41,6 +42,7 @@ impl Fzf {
     pub fn run(&mut self) -> io::Result<()> {
         let args = [
             format!("--prompt={}", self.prompt),
+            format!("--pointer={}", self.pointer),
             format!("--layout={}", self.layout.to_string()),
         ];
 
@@ -132,6 +134,7 @@ impl ToString for Layout {
 #[derive(Clone)]
 pub struct FzfBuilder {
     prompt: String,
+    pointer: String,
     layout: Layout,
 }
 
@@ -139,6 +142,7 @@ impl Default for FzfBuilder {
     fn default() -> Self {
         Self {
             prompt: "> ".to_string(),
+            pointer: ">".to_string(),
             layout: Layout::Default,
         }
     }
@@ -148,6 +152,12 @@ impl FzfBuilder {
     /// The prompt in the search bar
     pub fn prompt<T: Into<String>>(&mut self, prompt: T) -> &mut Self {
         self.prompt = prompt.into();
+        self
+    }
+
+    /// The pointer to the current line
+    pub fn pointer<T: Into<String>>(&mut self, pointer: T) -> &mut Self {
+        self.pointer = pointer.into();
         self
     }
 
@@ -163,6 +173,7 @@ impl FzfBuilder {
             instance: None,
             stdin: None,
             prompt: builder.prompt,
+            pointer: builder.pointer,
             layout: builder.layout,
         }
     }
