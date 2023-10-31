@@ -30,6 +30,7 @@ pub struct Fzf {
     prompt: String,
     pointer: String,
     layout: Layout,
+    color: Color,
 }
 
 impl Fzf {
@@ -44,6 +45,7 @@ impl Fzf {
             format!("--prompt={}", self.prompt),
             format!("--pointer={}", self.pointer),
             format!("--layout={}", self.layout.to_string()),
+            format!("--color={}", self.color.to_string()),
         ];
 
         let mut fzf = Command::new("fzf")
@@ -118,7 +120,7 @@ impl Default for Fzf {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 /// An Enum to represent the possible layouts to display `fzf` with
 pub enum Layout {
     Default,
@@ -137,11 +139,33 @@ impl ToString for Layout {
     }
 }
 
+#[derive(Clone, Copy)]
+/// Enum to represent the different themes fzf can have
+pub enum Color {
+    Dark,
+    Light,
+    Sixteen,
+    Bw
+}
+
+impl ToString for Color {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Dark => "dark",
+            Self::Light => "light",
+            Self::Sixteen => "16",
+            Self::Bw => "bw"
+        }
+        .to_string()
+    }
+}
+
 #[derive(Clone)]
 pub struct FzfBuilder {
     prompt: String,
     pointer: String,
     layout: Layout,
+    color: Color,
 }
 
 impl Default for FzfBuilder {
@@ -150,6 +174,7 @@ impl Default for FzfBuilder {
             prompt: "> ".to_string(),
             pointer: ">".to_string(),
             layout: Layout::Default,
+            color: Color::Dark,
         }
     }
 }
@@ -173,6 +198,12 @@ impl FzfBuilder {
         self
     }
 
+    /// The layout to display `fzf` with
+    pub fn color(&mut self, color: Color) -> &mut Self {
+        self.color = color;
+        self
+    }
+
     pub fn build(&self) -> Fzf {
         let builder = self.clone();
         Fzf {
@@ -181,6 +212,7 @@ impl FzfBuilder {
             prompt: builder.prompt,
             pointer: builder.pointer,
             layout: builder.layout,
+            color: builder.color
         }
     }
 }
