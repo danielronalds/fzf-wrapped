@@ -1,5 +1,6 @@
 pub struct Fzf {
     prompt: String,
+    layout: FzfLayout,
 }
 
 impl Fzf {
@@ -8,13 +9,35 @@ impl Fzf {
     }
 }
 
+/// An Enum to represent the possible layouts to display `fzf` with
+pub enum FzfLayout {
+    Default,
+    Reverse,
+    ReverseList,
+}
+
+impl Into<String> for FzfLayout {
+    fn into(self) -> String {
+        match self {
+            FzfLayout::Default => "default",
+            FzfLayout::Reverse => "reverse",
+            FzfLayout::ReverseList => "reverse-list",
+        }
+        .to_string()
+    }
+}
+
 pub struct FzfBuilder {
     prompt: String,
+    layout: FzfLayout,
 }
 
 impl Default for FzfBuilder {
     fn default() -> Self {
-        Self { prompt: "> ".to_string() }
+        Self {
+            prompt: "> ".to_string(),
+            layout: FzfLayout::Default,
+        }
     }
 }
 
@@ -25,9 +48,16 @@ impl FzfBuilder {
         self
     }
 
+    /// The layout to display `fzf` with
+    pub fn layout(&mut self, layout: FzfLayout) -> &mut Self {
+        self.layout = layout;
+        self
+    }
+
     pub fn build(self) -> Fzf {
         Fzf {
             prompt: self.prompt,
+            layout: self.layout,
         }
     }
 }
