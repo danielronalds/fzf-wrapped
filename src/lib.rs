@@ -35,18 +35,20 @@ pub struct Fzf {
     stdin: Option<ChildStdin>,
 
     // Options
-    #[builder(setter(into, strip_option), default="DEFAULT_PROMPT.to_string()")]
+    #[builder(setter(into, strip_option), default = "DEFAULT_PROMPT.to_string()")]
     prompt: String,
-    #[builder(setter(into, strip_option), default="DEFAULT_POINTER.to_string()")]
+    #[builder(setter(into, strip_option), default = "DEFAULT_POINTER.to_string()")]
     pointer: String,
-    #[builder(setter(into, strip_option), default="Layout::Default")]
+    #[builder(setter(into, strip_option), default = "Layout::Default")]
     layout: Layout,
-    #[builder(setter(into, strip_option), default="Color::Dark")]
+    #[builder(setter(into, strip_option), default = "Color::Dark")]
     color: Color,
-    #[builder(setter(into, strip_option), default="false")]
+    #[builder(setter(into, strip_option), default = "false")]
     no_bold: bool,
-    #[builder(setter(into, strip_option), default="false")]
+    #[builder(setter(into, strip_option), default = "false")]
     disabled: bool,
+    #[builder(setter(into, strip_option), default = "false")]
+    ansi: bool,
 }
 
 impl Fzf {
@@ -57,6 +59,19 @@ impl Fzf {
 
     /// Spawns `fzf` as a child proccess, and displays it to stdout
     pub fn run(&mut self) -> io::Result<()> {
+        let args = self.get_fzf_args();
+        let mut fzf = Command::new("fzf")
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .args(args)
+            .spawn()?;
+
+        self.stdin = fzf.stdin.take();
+        self.instance = Some(fzf);
+        Ok(())
+    }
+
+    fn get_fzf_args(&self) -> Vec<String> {
         let mut args = vec![
             format!("--prompt={}", self.prompt),
             format!("--pointer={}", self.pointer),
@@ -73,16 +88,9 @@ impl Fzf {
 
         add_if_true(&mut args, "--no-bold", self.no_bold);
         add_if_true(&mut args, "--disabled", self.disabled);
+        add_if_true(&mut args, "--ansi", self.ansi);
 
-        let mut fzf = Command::new("fzf")
-            .stdin(Stdio::piped())
-            .stdout(Stdio::piped())
-            .args(args)
-            .spawn()?;
-
-        self.stdin = fzf.stdin.take();
-        self.instance = Some(fzf);
-        Ok(())
+        args
     }
 
     /// Adds an item to the `fzf` selection ui
