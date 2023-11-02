@@ -5,6 +5,9 @@ use std::{
 
 use derive_builder::Builder;
 
+pub mod options;
+use options::*;
+
 /// Runs the given [`Fzf`] struct and returns the user's selection as a [`String`]
 ///
 /// # Parameters
@@ -200,46 +203,6 @@ impl Fzf {
 impl Default for Fzf {
     fn default() -> Self {
         FzfBuilder::default().build().unwrap()
-    }
-}
-
-#[derive(Clone, Copy)]
-/// An Enum to represent the possible layouts to display `fzf` with
-pub enum Layout {
-    Default,
-    Reverse,
-    ReverseList,
-}
-
-impl ToString for Layout {
-    fn to_string(&self) -> String {
-        match self {
-            Layout::Default => "default",
-            Layout::Reverse => "reverse",
-            Layout::ReverseList => "reverse-list",
-        }
-        .to_string()
-    }
-}
-
-#[derive(Clone, Copy)]
-/// Enum to represent the different themes fzf can have
-pub enum Color {
-    Dark,
-    Light,
-    Sixteen,
-    Bw,
-}
-
-impl ToString for Color {
-    fn to_string(&self) -> String {
-        match self {
-            Self::Dark => "dark",
-            Self::Light => "light",
-            Self::Sixteen => "16",
-            Self::Bw => "bw",
-        }
-        .to_string()
     }
 }
 
