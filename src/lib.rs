@@ -31,6 +31,8 @@ pub struct Fzf {
     pointer: String,
     layout: Layout,
     color: Color,
+    no_bold: bool,
+    disabled: bool,
 }
 
 impl Fzf {
@@ -41,12 +43,22 @@ impl Fzf {
 
     /// Spawns `fzf` as a child proccess, and displays it to stdout
     pub fn run(&mut self) -> io::Result<()> {
-        let args = [
+        let mut args = vec![
             format!("--prompt={}", self.prompt),
             format!("--pointer={}", self.pointer),
             format!("--layout={}", self.layout.to_string()),
             format!("--color={}", self.color.to_string()),
         ];
+
+        /// Adds the option if the value is true
+        fn add_if_true<T: Into<String>>(args: &mut Vec<String>, fzf_arg: T, value: bool) {
+            if value {
+                args.push(fzf_arg.into());
+            }
+        }
+
+        add_if_true(&mut args, "--no-bold", self.no_bold);
+        add_if_true(&mut args, "--disabled", self.disabled);
 
         let mut fzf = Command::new("fzf")
             .stdin(Stdio::piped())
@@ -145,7 +157,7 @@ pub enum Color {
     Dark,
     Light,
     Sixteen,
-    Bw
+    Bw,
 }
 
 impl ToString for Color {
@@ -154,7 +166,7 @@ impl ToString for Color {
             Self::Dark => "dark",
             Self::Light => "light",
             Self::Sixteen => "16",
-            Self::Bw => "bw"
+            Self::Bw => "bw",
         }
         .to_string()
     }
@@ -166,6 +178,8 @@ pub struct FzfBuilder {
     pointer: String,
     layout: Layout,
     color: Color,
+    no_bold: bool,
+    disabled: bool,
 }
 
 impl Default for FzfBuilder {
@@ -175,6 +189,8 @@ impl Default for FzfBuilder {
             pointer: ">".to_string(),
             layout: Layout::Default,
             color: Color::Dark,
+            no_bold: false,
+            disabled: false,
         }
     }
 }
@@ -204,6 +220,18 @@ impl FzfBuilder {
         self
     }
 
+    /// Do not use bold text
+    pub fn no_bold(&mut self, no_bold: bool) -> &mut Self {
+        self.no_bold = no_bold;
+        self
+    }
+
+    /// Do not perform search
+    pub fn disabled(&mut self, disabled: bool) -> &mut Self {
+        self.disabled = disabled;
+        self
+    }
+
     pub fn build(&self) -> Fzf {
         let builder = self.clone();
         Fzf {
@@ -212,7 +240,9 @@ impl FzfBuilder {
             prompt: builder.prompt,
             pointer: builder.pointer,
             layout: builder.layout,
-            color: builder.color
+            color: builder.color,
+            no_bold: builder.no_bold,
+            disabled: builder.disabled,
         }
     }
 }
