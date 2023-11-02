@@ -49,6 +49,8 @@ pub struct Fzf {
     disabled: bool,
     #[builder(setter(into, strip_option), default = "false")]
     ansi: bool,
+    #[builder(setter(into, strip_option), default = "false")]
+    no_mouse: bool,
 }
 
 impl Fzf {
@@ -71,6 +73,7 @@ impl Fzf {
         Ok(())
     }
 
+    /// Creates the vec of arguments to pass to `fzf`
     fn get_fzf_args(&self) -> Vec<String> {
         let mut args = vec![
             format!("--prompt={}", self.prompt),
@@ -89,6 +92,7 @@ impl Fzf {
         add_if_true(&mut args, "--no-bold", self.no_bold);
         add_if_true(&mut args, "--disabled", self.disabled);
         add_if_true(&mut args, "--ansi", self.ansi);
+        add_if_true(&mut args, "--no-mouse", self.no_mouse);
 
         args
     }
