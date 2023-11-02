@@ -27,6 +27,7 @@ pub fn run_with_output<T: Into<String>>(fzf: Fzf, items: Vec<T>) -> Option<Strin
 const DEFAULT_PROMPT: &str = "> ";
 const DEFAULT_POINTER: &str = ">";
 const DEFAULT_BORDER_LABEL: &str = "";
+const DEFAULT_HEADER: &str = "";
 
 #[derive(Builder)]
 /// Struct that represents the `fzf` program
@@ -94,6 +95,9 @@ pub struct Fzf {
     /// Pointer to the current line (default: '>')
     #[builder(setter(into, strip_option), default = "DEFAULT_POINTER.to_string()")]
     pointer: String,
+    /// String to print as header
+    #[builder(setter(into, strip_option), default = "DEFAULT_HEADER.to_string()")]
+    header: String,
     /// Print header before the prompt line
     #[builder(setter(into, strip_option), default = "false")]
     header_first: bool,
@@ -166,6 +170,9 @@ impl Fzf {
         add_if_true(&mut args, "--no-scrollbar", self.no_scrollbar);
         args.push(format!("--prompt={}", self.prompt));
         args.push(format!("--pointer={}", self.pointer));
+        if !self.header.is_empty() {
+            args.push(format!("--header={}", &self.header));
+        }
         add_if_true(&mut args, "--header-first", self.header_first);
 
         // Display
