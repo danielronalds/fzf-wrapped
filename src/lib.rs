@@ -51,14 +51,24 @@ pub struct Fzf {
     cycle: bool,
     #[builder(setter(into, strip_option), default = "false")]
     keep_right: bool,
+    #[builder(setter(into, strip_option), default = "false")]
+    no_hscroll: bool,
+    #[builder(setter(into, strip_option), default = "false")]
+    filepath_word: bool,
 
     // Layout Options
     #[builder(setter(into, strip_option), default = "Layout::Default")]
     layout: Layout,
+    #[builder(setter(into, strip_option), default = "false")]
+    no_seperator: bool,
+    #[builder(setter(into, strip_option), default = "false")]
+    no_scrollbar: bool,
     #[builder(setter(into, strip_option), default = "DEFAULT_PROMPT.to_string()")]
     prompt: String,
     #[builder(setter(into, strip_option), default = "DEFAULT_POINTER.to_string()")]
     pointer: String,
+    #[builder(setter(into, strip_option), default = "false")]
+    header_first: bool,
 
     // Display
     #[builder(setter(into, strip_option), default = "false")]
@@ -112,11 +122,16 @@ impl Fzf {
         add_if_true(&mut args, "--no-mouse", self.no_mouse);
         add_if_true(&mut args, "--cycle", self.cycle);
         add_if_true(&mut args, "--keep-right", self.keep_right);
+        add_if_true(&mut args, "--no-hscroll", self.no_hscroll);
+        add_if_true(&mut args, "--filepath-word", self.filepath_word);
 
         // Layout
         args.push(format!("--layout={}", self.layout.to_string()));
+        add_if_true(&mut args, "--no-seperator", self.no_seperator);
+        add_if_true(&mut args, "--no-scrollbar", self.no_scrollbar);
         args.push(format!("--prompt={}", self.prompt));
         args.push(format!("--pointer={}", self.pointer));
+        add_if_true(&mut args, "--header-first", self.header_first);
 
         // Display
         add_if_true(&mut args, "--ansi", self.ansi);
