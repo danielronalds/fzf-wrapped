@@ -26,6 +26,7 @@ pub fn run_with_output<T: Into<String>>(fzf: Fzf, items: Vec<T>) -> Option<Strin
 
 const DEFAULT_PROMPT: &str = "> ";
 const DEFAULT_POINTER: &str = ">";
+const DEFAULT_BORDER_LABEL: &str = "";
 
 #[derive(Builder)]
 /// Struct that represents the `fzf` program
@@ -75,6 +76,12 @@ pub struct Fzf {
     /// Choose layout
     #[builder(setter(into, strip_option), default = "Layout::Default")]
     layout: Layout,
+    /// Draw border around the finder
+    #[builder(setter(into, strip_option), default = "Border::None")]
+    border: Border,
+    /// Label to print on the border
+    #[builder(setter(into, strip_option), default = "DEFAULT_BORDER_LABEL.to_string()")]
+    border_label: String,
     /// Hide info line separator
     #[builder(setter(into, strip_option), default = "false")]
     no_separator: bool,
@@ -153,6 +160,8 @@ impl Fzf {
 
         // Layout
         args.push(format!("--layout={}", self.layout.to_string()));
+        args.push(format!("--border={}", self.border.to_string()));
+        args.push(format!("--border-label={}", self.border_label));
         add_if_true(&mut args, "--no-separator", self.no_separator);
         add_if_true(&mut args, "--no-scrollbar", self.no_scrollbar);
         args.push(format!("--prompt={}", self.prompt));

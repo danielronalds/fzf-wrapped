@@ -5,7 +5,7 @@
 pub enum Scheme {
     Default,
     Path,
-    History
+    History,
 }
 
 impl ToString for Scheme {
@@ -14,7 +14,8 @@ impl ToString for Scheme {
             Self::Default => "default",
             Self::Path => "path",
             Self::History => "history",
-        }.to_string()
+        }
+        .to_string()
     }
 }
 
@@ -55,5 +56,35 @@ impl ToString for Layout {
             Layout::ReverseList => "reverse-list",
         }
         .to_string()
+    }
+}
+
+#[derive(Clone, Copy)]
+/// An Enum to represent the possible borders to display around the finder
+pub enum Border {
+    None,
+    Rounded,
+    Sharp,
+    Horizontal,
+    Vertical,
+    Top,
+    Bottom,
+    Left,
+    Right,
+}
+
+impl ToString for Border {
+    fn to_string(&self) -> String {
+        match self {
+            Border::None => "none",
+            Border::Rounded => "rounded",
+            Border::Sharp => "sharp",
+            Border::Horizontal => "horizontal",
+            Border::Vertical => "vertical",
+            Border::Top => "top",
+            Border::Bottom => "bottom",
+            Border::Left => "left",
+            Border::Right => "right",
+        }.to_string()
     }
 }
