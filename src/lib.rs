@@ -3,6 +3,8 @@ use std::{
     process::{Child, ChildStdin, Command, Stdio},
 };
 
+use derive_builder::Builder;
+
 /// Runs the given [`Fzf`] struct and returns the user's selection as a [`String`]
 ///
 /// # Parameters
@@ -19,19 +21,31 @@ pub fn run_with_output<T: Into<String>>(fzf: Fzf, items: Vec<T>) -> Option<Strin
     fzf.output()
 }
 
+const DEFAULT_PROMPT: &str = "> ";
+const DEFAULT_POINTER: &str = ">";
+
+#[derive(Builder)]
 /// Struct that represents the `fzf` program
 pub struct Fzf {
+    #[builder(setter(skip))]
     /// Contains the child stuct returned when the fzf command is spawned
     instance: Option<Child>,
     /// Contains the child process stdin handle after the `run` method has been called
+    #[builder(setter(skip))]
     stdin: Option<ChildStdin>,
 
     // Options
+    #[builder(setter(into, strip_option), default="DEFAULT_PROMPT.to_string()")]
     prompt: String,
+    #[builder(setter(into, strip_option), default="DEFAULT_POINTER.to_string()")]
     pointer: String,
+    #[builder(setter(into, strip_option), default="Layout::Default")]
     layout: Layout,
+    #[builder(setter(into, strip_option), default="Color::Dark")]
     color: Color,
+    #[builder(setter(into, strip_option), default="false")]
     no_bold: bool,
+    #[builder(setter(into, strip_option), default="false")]
     disabled: bool,
 }
 
@@ -128,7 +142,7 @@ impl Fzf {
 
 impl Default for Fzf {
     fn default() -> Self {
-        FzfBuilder::default().build()
+        FzfBuilder::default().build().unwrap()
     }
 }
 
@@ -172,80 +186,12 @@ impl ToString for Color {
     }
 }
 
-#[derive(Clone)]
-pub struct FzfBuilder {
-    prompt: String,
-    pointer: String,
-    layout: Layout,
-    color: Color,
-    no_bold: bool,
-    disabled: bool,
-}
-
-impl Default for FzfBuilder {
-    fn default() -> Self {
-        Self {
-            prompt: "> ".to_string(),
-            pointer: ">".to_string(),
-            layout: Layout::Default,
-            color: Color::Dark,
-            no_bold: false,
-            disabled: false,
-        }
-    }
-}
-
-impl FzfBuilder {
-    /// The prompt in the search bar
-    pub fn prompt<T: Into<String>>(&mut self, prompt: T) -> &mut Self {
-        self.prompt = prompt.into();
-        self
-    }
-
-    /// The pointer to the current line
-    pub fn pointer<T: Into<String>>(&mut self, pointer: T) -> &mut Self {
-        self.pointer = pointer.into();
-        self
-    }
-
-    /// The layout to display `fzf` with
-    pub fn layout(&mut self, layout: Layout) -> &mut Self {
-        self.layout = layout;
-        self
-    }
-
-    /// The layout to display `fzf` with
-    pub fn color(&mut self, color: Color) -> &mut Self {
-        self.color = color;
-        self
-    }
-
-    /// Do not use bold text
-    pub fn no_bold(&mut self, no_bold: bool) -> &mut Self {
-        self.no_bold = no_bold;
-        self
-    }
-
-    /// Do not perform search
-    pub fn disabled(&mut self, disabled: bool) -> &mut Self {
-        self.disabled = disabled;
-        self
-    }
-
-    pub fn build(&self) -> Fzf {
-        let builder = self.clone();
-        Fzf {
-            instance: None,
-            stdin: None,
-            prompt: builder.prompt,
-            pointer: builder.pointer,
-            layout: builder.layout,
-            color: builder.color,
-            no_bold: builder.no_bold,
-            disabled: builder.disabled,
-        }
-    }
-}
-
 #[cfg(test)]
-mod tests {}
+mod tests {
+    use super::*;
+
+    #[test]
+    fn builder_works_as_expected() {
+        let _ = Fzf::builder().build();
+    }
+}
