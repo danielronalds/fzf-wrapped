@@ -34,23 +34,41 @@ pub struct Fzf {
     #[builder(setter(skip))]
     stdin: Option<ChildStdin>,
 
-    // Options
+    // Search
+    #[builder(setter(into, strip_option), default = "false")]
+    literal: bool,
+    #[builder(setter(into, strip_option), default = "false")]
+    track: bool,
+    #[builder(setter(into, strip_option), default = "false")]
+    tac: bool,
+    #[builder(setter(into, strip_option), default = "false")]
+    disabled: bool,
+
+    // Interface
+    #[builder(setter(into, strip_option), default = "false")]
+    no_mouse: bool,
+    #[builder(setter(into, strip_option), default = "false")]
+    cycle: bool,
+    #[builder(setter(into, strip_option), default = "false")]
+    keep_right: bool,
+
+    // Layout Options
+    #[builder(setter(into, strip_option), default = "Layout::Default")]
+    layout: Layout,
     #[builder(setter(into, strip_option), default = "DEFAULT_PROMPT.to_string()")]
     prompt: String,
     #[builder(setter(into, strip_option), default = "DEFAULT_POINTER.to_string()")]
     pointer: String,
-    #[builder(setter(into, strip_option), default = "Layout::Default")]
-    layout: Layout,
+
+    // Display
+    #[builder(setter(into, strip_option), default = "false")]
+    ansi: bool,
+    #[builder(setter(into, strip_option), default = "8")]
+    tabstop: u8,
     #[builder(setter(into, strip_option), default = "Color::Dark")]
     color: Color,
     #[builder(setter(into, strip_option), default = "false")]
     no_bold: bool,
-    #[builder(setter(into, strip_option), default = "false")]
-    disabled: bool,
-    #[builder(setter(into, strip_option), default = "false")]
-    ansi: bool,
-    #[builder(setter(into, strip_option), default = "false")]
-    no_mouse: bool,
 }
 
 impl Fzf {
@@ -75,12 +93,7 @@ impl Fzf {
 
     /// Creates the vec of arguments to pass to `fzf`
     fn get_fzf_args(&self) -> Vec<String> {
-        let mut args = vec![
-            format!("--prompt={}", self.prompt),
-            format!("--pointer={}", self.pointer),
-            format!("--layout={}", self.layout.to_string()),
-            format!("--color={}", self.color.to_string()),
-        ];
+        let mut args = vec![];
 
         /// Adds the option if the value is true
         fn add_if_true<T: Into<String>>(args: &mut Vec<String>, fzf_arg: T, value: bool) {
@@ -89,10 +102,27 @@ impl Fzf {
             }
         }
 
-        add_if_true(&mut args, "--no-bold", self.no_bold);
+        // Search
+        add_if_true(&mut args, "--literal", self.literal);
+        add_if_true(&mut args, "--track", self.track);
+        add_if_true(&mut args, "--tac", self.tac);
         add_if_true(&mut args, "--disabled", self.disabled);
-        add_if_true(&mut args, "--ansi", self.ansi);
+
+        // Interface
         add_if_true(&mut args, "--no-mouse", self.no_mouse);
+        add_if_true(&mut args, "--cycle", self.cycle);
+        add_if_true(&mut args, "--keep-right", self.keep_right);
+
+        // Layout
+        args.push(format!("--layout={}", self.layout.to_string()));
+        args.push(format!("--prompt={}", self.prompt));
+        args.push(format!("--pointer={}", self.pointer));
+
+        // Display
+        add_if_true(&mut args, "--ansi", self.ansi);
+        args.push(format!("--tabstop={}", self.tabstop));
+        args.push(format!("--color={}", self.color.to_string()));
+        add_if_true(&mut args, "--no-bold", self.no_bold);
 
         args
     }
