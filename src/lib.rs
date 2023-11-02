@@ -38,50 +38,70 @@ pub struct Fzf {
     stdin: Option<ChildStdin>,
 
     // Search
+    /// Scoring scheme
     #[builder(setter(into, strip_option), default = "Scheme::Default")]
     scheme: Scheme,
+    /// Do not normalize latin script letters before matching
     #[builder(setter(into, strip_option), default = "false")]
     literal: bool,
+    /// Track the current selection when the result is updated
     #[builder(setter(into, strip_option), default = "false")]
     track: bool,
+    /// Reverse the order of the input
     #[builder(setter(into, strip_option), default = "false")]
     tac: bool,
+    /// Do not perform search
     #[builder(setter(into, strip_option), default = "false")]
     disabled: bool,
 
     // Interface
+    /// Disable mouse
     #[builder(setter(into, strip_option), default = "false")]
     no_mouse: bool,
+    /// Enable cyclic scroll
     #[builder(setter(into, strip_option), default = "false")]
     cycle: bool,
+    /// Keep the right end of the line visible on overflow
     #[builder(setter(into, strip_option), default = "false")]
     keep_right: bool,
+    /// Disable horizontal scroll
     #[builder(setter(into, strip_option), default = "false")]
     no_hscroll: bool,
+    /// Make word-wise movements respect path separators
     #[builder(setter(into, strip_option), default = "false")]
     filepath_word: bool,
 
     // Layout Options
+    /// Choose layout
     #[builder(setter(into, strip_option), default = "Layout::Default")]
     layout: Layout,
+    /// Hide info line separator
     #[builder(setter(into, strip_option), default = "false")]
-    no_seperator: bool,
+    no_separator: bool,
+    /// Hide scrollbar
     #[builder(setter(into, strip_option), default = "false")]
     no_scrollbar: bool,
+    /// Input prompt (default: '> ')
     #[builder(setter(into, strip_option), default = "DEFAULT_PROMPT.to_string()")]
     prompt: String,
+    /// Pointer to the current line (default: '>')
     #[builder(setter(into, strip_option), default = "DEFAULT_POINTER.to_string()")]
     pointer: String,
+    /// Print header before the prompt line
     #[builder(setter(into, strip_option), default = "false")]
     header_first: bool,
 
     // Display
+    /// Enable processing of ANSI color codes
     #[builder(setter(into, strip_option), default = "false")]
     ansi: bool,
+    /// Number of spaces for a tab character (default: 8)
     #[builder(setter(into, strip_option), default = "8")]
     tabstop: u8,
+    /// Base scheme (dark|light|16|bw)
     #[builder(setter(into, strip_option), default = "Color::Dark")]
     color: Color,
+    /// Do not use bold text
     #[builder(setter(into, strip_option), default = "false")]
     no_bold: bool,
 }
@@ -133,7 +153,7 @@ impl Fzf {
 
         // Layout
         args.push(format!("--layout={}", self.layout.to_string()));
-        add_if_true(&mut args, "--no-seperator", self.no_seperator);
+        add_if_true(&mut args, "--no-separator", self.no_separator);
         add_if_true(&mut args, "--no-scrollbar", self.no_scrollbar);
         args.push(format!("--prompt={}", self.prompt));
         args.push(format!("--pointer={}", self.pointer));
