@@ -38,6 +38,8 @@ pub struct Fzf {
     stdin: Option<ChildStdin>,
 
     // Search
+    #[builder(setter(into, strip_option), default = "Scheme::Default")]
+    scheme: Scheme,
     #[builder(setter(into, strip_option), default = "false")]
     literal: bool,
     #[builder(setter(into, strip_option), default = "false")]
@@ -116,6 +118,7 @@ impl Fzf {
         }
 
         // Search
+        args.push(format!("--scheme={}", self.scheme.to_string()));
         add_if_true(&mut args, "--literal", self.literal);
         add_if_true(&mut args, "--track", self.track);
         add_if_true(&mut args, "--tac", self.tac);

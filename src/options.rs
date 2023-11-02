@@ -1,6 +1,24 @@
 //! This module contains the enum's that represent certain `fzf` cli options
 
 #[derive(Clone, Copy)]
+/// Enum to represent the scoring schemes fzf can use
+pub enum Scheme {
+    Default,
+    Path,
+    History
+}
+
+impl ToString for Scheme {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Default => "default",
+            Self::Path => "path",
+            Self::History => "history",
+        }.to_string()
+    }
+}
+
+#[derive(Clone, Copy)]
 /// Enum to represent the different themes fzf can have
 pub enum Color {
     Dark,
