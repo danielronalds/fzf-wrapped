@@ -213,8 +213,8 @@ impl Fzf {
     ///
     /// This function calls `add_item`, which will panic if the `run` method has not been called
     /// before adding items
-    pub fn add_items<T: Into<String>>(&mut self, items: Vec<T>) -> io::Result<()> {
-        for item in items {
+    pub fn add_items(&mut self, items: impl IntoIterator<Item = impl Into<String>>) -> io::Result<()> {
+        for item in items.into_iter() {
             self.add_item(item)?;
         }
         Ok(())

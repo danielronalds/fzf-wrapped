@@ -339,7 +339,7 @@ pub use fzf::*;
 /// # Returns
 ///
 /// An option containing either the users selection as a [`String`], or `None` if the user quit `fzf`
-pub fn run_with_output<T: Into<String>>(fzf: Fzf, items: Vec<T>) -> Option<String> {
+pub fn run_with_output(fzf: Fzf, items: impl IntoIterator<Item = impl Into<String>>) -> Option<String> {
     let mut fzf = fzf;
     fzf.run().ok()?;
     fzf.add_items(items).ok()?;
