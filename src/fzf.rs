@@ -23,7 +23,7 @@ pub struct Fzf {
     stdin: Option<ChildStdin>,
 
     /// Additional arguments that this library doesn't currently support as a predefined option
-    #[builder(setter(into, strip_option), default = "vec![]")]
+    #[builder(setter(custom), default = "vec![]")]
     custom_args: Vec<String>,
 
     // Search
@@ -105,6 +105,14 @@ pub struct Fzf {
     /// Do not use bold text
     #[builder(setter(into, strip_option), default = "false")]
     no_bold: bool,
+}
+
+impl FzfBuilder {
+    #[allow(dead_code)]
+    pub fn custom_args(&mut self, args: impl IntoIterator<Item = impl Into<String>>) -> &mut Self{
+        self.custom_args = Some(args.into_iter().map(|x| x.into()).collect());
+        self
+    }
 }
 
 impl Fzf {
