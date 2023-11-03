@@ -41,6 +41,8 @@ to display anything. There are two ways to do this, the `add_item()` method, and
 `add_item()`.
 
 ```rust
+let mut fzf = Fzf::default();
+fzf.run().expect("Failed to start fzf");
 fzf.add_items(colours).expect("Failed to add items");
 ```
 
@@ -50,6 +52,9 @@ the item they selected. To get the output we simply call the `output()` method, 
 blocks execution until the user selects an item with `fzf`
 
 ```rust
+let mut fzf = Fzf::default();
+fzf.run().expect("Failed to start fzf");
+fzf.add_items(colours).expect("Failed to add items");
 let users_selection = fzf.output().expect("Failed to get the user's output");
 ```
 
@@ -123,7 +128,7 @@ Adding a rounded border makes our code look like this:
 
 ```rust
 use fzf_wrapped::Fzf;
-use fzf_wrapped::options::Border;
+use fzf_wrapped::Border;
 use fzf_wrapped::run_with_output;
 
 fn main() {
@@ -142,7 +147,7 @@ And adding a label is even more simple
 
 ```rust
 use fzf_wrapped::Fzf;
-use fzf_wrapped::options::Border;
+use fzf_wrapped::Border;
 use fzf_wrapped::run_with_output;
 
 fn main() {
@@ -170,7 +175,7 @@ All we need to add to our builder is the `layout()` method with our chosen [`Lay
 
 ```rust
 use fzf_wrapped::Fzf;
-use fzf_wrapped::options::{Border, Layout};
+use fzf_wrapped::{Border, Layout};
 use fzf_wrapped::run_with_output;
 
 fn main() {
@@ -195,7 +200,7 @@ enum. Adding it to our builder results in the following code:
 
 ```rust
 use fzf_wrapped::Fzf;
-use fzf_wrapped::options::{Border, Color, Layout};
+use fzf_wrapped::{Border, Color, Layout};
 use fzf_wrapped::run_with_output;
 
 fn main() {
@@ -224,7 +229,7 @@ above our search field, so we'll call the `header_first()` method with `true`.
 
 ```rust
 use fzf_wrapped::Fzf;
-use fzf_wrapped::options::{Border, Color, Layout};
+use fzf_wrapped::{Border, Color, Layout};
 use fzf_wrapped::run_with_output;
 
 fn main() {
@@ -257,7 +262,7 @@ Implementing it would look like:
 
 ```rust
 use fzf_wrapped::Fzf;
-use fzf_wrapped::options::{Border, Color, Layout};
+use fzf_wrapped::{Border, Color, Layout};
 use fzf_wrapped::run_with_output;
 
 fn main() {
@@ -289,7 +294,7 @@ some proper error handling.
 
 ```rust
 use fzf_wrapped::Fzf;
-use fzf_wrapped::options::{Border, Color, Layout};
+use fzf_wrapped::{Border, Color, Layout};
 use fzf_wrapped::run_with_output;
 
 fn main() {

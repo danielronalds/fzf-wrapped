@@ -41,6 +41,8 @@
 //! `add_item()`.
 //!
 //! ```rust
+//! # let mut fzf = Fzf::default();
+//! # fzf.run().expect("Failed to start fzf");
 //! fzf.add_items(colours).expect("Failed to add items");
 //! ```
 //!
@@ -50,6 +52,9 @@
 //! blocks execution until the user selects an item with `fzf`
 //!
 //! ```rust
+//! # let mut fzf = Fzf::default();
+//! # fzf.run().expect("Failed to start fzf");
+//! # fzf.add_items(colours).expect("Failed to add items");
 //! let users_selection = fzf.output().expect("Failed to get the user's output");
 //! ```
 //!
@@ -123,7 +128,7 @@
 //!
 //! ```rust
 //! use fzf_wrapped::Fzf;
-//! use fzf_wrapped::options::Border;
+//! use fzf_wrapped::Border;
 //! use fzf_wrapped::run_with_output;
 //!
 //! fn main() {
@@ -142,7 +147,7 @@
 //!
 //! ```rust
 //! use fzf_wrapped::Fzf;
-//! use fzf_wrapped::options::Border;
+//! use fzf_wrapped::Border;
 //! use fzf_wrapped::run_with_output;
 //!
 //! fn main() {
@@ -170,7 +175,7 @@
 //!
 //! ```rust
 //! use fzf_wrapped::Fzf;
-//! use fzf_wrapped::options::{Border, Layout};
+//! use fzf_wrapped::{Border, Layout};
 //! use fzf_wrapped::run_with_output;
 //!
 //! fn main() {
@@ -195,7 +200,7 @@
 //!
 //! ```rust
 //! use fzf_wrapped::Fzf;
-//! use fzf_wrapped::options::{Border, Color, Layout};
+//! use fzf_wrapped::{Border, Color, Layout};
 //! use fzf_wrapped::run_with_output;
 //!
 //! fn main() {
@@ -224,7 +229,7 @@
 //!
 //! ```rust
 //! use fzf_wrapped::Fzf;
-//! use fzf_wrapped::options::{Border, Color, Layout};
+//! use fzf_wrapped::{Border, Color, Layout};
 //! use fzf_wrapped::run_with_output;
 //!
 //! fn main() {
@@ -257,7 +262,7 @@
 //!
 //! ```rust
 //! use fzf_wrapped::Fzf;
-//! use fzf_wrapped::options::{Border, Color, Layout};
+//! use fzf_wrapped::{Border, Color, Layout};
 //! use fzf_wrapped::run_with_output;
 //!
 //! fn main() {
@@ -289,7 +294,7 @@
 //!
 //! ```rust
 //! use fzf_wrapped::Fzf;
-//! use fzf_wrapped::options::{Border, Color, Layout};
+//! use fzf_wrapped::{Border, Color, Layout};
 //! use fzf_wrapped::run_with_output;
 //!
 //! fn main() {

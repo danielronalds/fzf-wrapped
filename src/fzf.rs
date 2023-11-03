@@ -108,6 +108,7 @@ pub struct Fzf {
 }
 
 impl FzfBuilder {
+    /// Additional arguments that this library doesn't currently support as a predefined option
     #[allow(dead_code)]
     pub fn custom_args(&mut self, args: impl IntoIterator<Item = impl Into<String>>) -> &mut Self{
         self.custom_args = Some(args.into_iter().map(|x| x.into()).collect());
@@ -215,7 +216,7 @@ impl Fzf {
     ///
     /// # Parameters
     ///
-    /// - `items` The vec of items to add
+    /// - `items` The items to add
     ///
     /// # Panics
     ///
