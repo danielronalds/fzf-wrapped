@@ -39,6 +39,10 @@ pub struct Fzf {
     #[builder(setter(skip))]
     stdin: Option<ChildStdin>,
 
+    /// Additional arguments that this library doesn't currently support as a predefined option
+    #[builder(setter(into, strip_option), default = "vec![]")]
+    custom_args: Vec<String>,
+
     // Search
     /// Scoring scheme
     #[builder(setter(into, strip_option), default = "Scheme::Default")]
@@ -81,7 +85,10 @@ pub struct Fzf {
     #[builder(setter(into, strip_option), default = "Border::None")]
     border: Border,
     /// Label to print on the border
-    #[builder(setter(into, strip_option), default = "DEFAULT_BORDER_LABEL.to_string()")]
+    #[builder(
+        setter(into, strip_option),
+        default = "DEFAULT_BORDER_LABEL.to_string()"
+    )]
     border_label: String,
     /// Hide info line separator
     #[builder(setter(into, strip_option), default = "false")]
@@ -125,7 +132,13 @@ impl Fzf {
 
     /// Spawns `fzf` as a child proccess, and displays it to stdout
     pub fn run(&mut self) -> io::Result<()> {
-        let args = self.get_fzf_args();
+        let args: Vec<String> = self
+            .get_fzf_args()
+            .iter()
+            .chain(self.custom_args.iter())
+            .map(|x| x.to_owned())
+            .collect();
+
         let mut fzf = Command::new("fzf")
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
