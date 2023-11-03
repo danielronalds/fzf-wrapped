@@ -7,7 +7,8 @@ description="A library for integrating the `fzf` cli tool into your rust program
 license="MIT"
 readme="README.md"
 repository="https://github.com/danielronalds/fzf-wrapped"
-# TODO: keywords and categories
+categories=["command-line-interface", "gui", "api-bindings"]
+keywords=["fzf", "bindings", "api"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
