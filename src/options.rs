@@ -19,6 +19,17 @@ impl ToString for Scheme {
     }
 }
 
+impl From<String> for Scheme {
+    fn from(value: String) -> Self {
+        match value.to_lowercase().as_str() {
+            "default" => Self::Default,
+            "path" => Self::Path,
+            "history" => Self::History,
+            _ => Self::Default,
+        }
+    }
+}
+
 #[derive(Clone, Copy)]
 /// Enum to represent the different themes fzf can have
 pub enum Color {
@@ -40,6 +51,18 @@ impl ToString for Color {
     }
 }
 
+impl From<String> for Color {
+    fn from(value: String) -> Self {
+        match value.to_lowercase().as_str() {
+            "dark" => Self::Dark,
+            "light" => Self::Light,
+            "16" | "sixteen" => Self::Sixteen,
+            "bw" => Self::Bw,
+            _ => Self::Dark,
+        }
+    }
+}
+
 #[derive(Clone, Copy)]
 /// An Enum to represent the possible layouts to display `fzf` with
 pub enum Layout {
@@ -56,6 +79,17 @@ impl ToString for Layout {
             Layout::ReverseList => "reverse-list",
         }
         .to_string()
+    }
+}
+
+impl From<String> for Layout {
+    fn from(value: String) -> Self {
+        match value.to_lowercase().as_str() {
+            "default" => Layout::Default,
+            "reverse" => Layout::Reverse,
+            "reverse-list" => Layout::ReverseList,
+            _ => Layout::Default,
+        }
     }
 }
 
@@ -85,6 +119,24 @@ impl ToString for Border {
             Border::Bottom => "bottom",
             Border::Left => "left",
             Border::Right => "right",
-        }.to_string()
+        }
+        .to_string()
+    }
+}
+
+impl From<String> for Border {
+    fn from(value: String) -> Self {
+        match value.to_lowercase().as_str() {
+            "none" => Border::None,
+            "rounded" => Border::Rounded,
+            "sharp" => Border::Sharp,
+            "horizontal" => Border::Horizontal,
+            "vertical" => Border::Vertical,
+            "top" => Border::Top,
+            "bottom" => Border::Bottom,
+            "left" => Border::Left,
+            "right" => Border::Right,
+            _ => Border::None,
+        }
     }
 }
