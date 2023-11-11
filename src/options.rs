@@ -1,11 +1,17 @@
 //! This module contains the enum's that represent certain `fzf` cli options
 
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 /// Enum to represent the scoring schemes fzf can use
 pub enum Scheme {
     Default,
     Path,
     History,
+}
+
+impl Default for Scheme {
+    fn default() -> Self {
+        Self::Default
+    }
 }
 
 impl ToString for Scheme {
@@ -30,13 +36,19 @@ impl From<String> for Scheme {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 /// Enum to represent the different themes fzf can have
 pub enum Color {
     Dark,
     Light,
     Sixteen,
     Bw,
+}
+
+impl Default for Color {
+    fn default() -> Self {
+        Self::Dark
+    }
 }
 
 impl ToString for Color {
@@ -63,12 +75,18 @@ impl From<String> for Color {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 /// An Enum to represent the possible layouts to display `fzf` with
 pub enum Layout {
     Default,
     Reverse,
     ReverseList,
+}
+
+impl Default for Layout {
+    fn default() -> Self {
+        Self::Default
+    }
 }
 
 impl ToString for Layout {
@@ -93,7 +111,7 @@ impl From<String> for Layout {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 /// An Enum to represent the possible borders to display around the finder
 pub enum Border {
     None,
@@ -105,6 +123,12 @@ pub enum Border {
     Bottom,
     Left,
     Right,
+}
+
+impl Default for Border {
+    fn default() -> Self {
+        Self::None
+    }
 }
 
 impl ToString for Border {

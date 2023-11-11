@@ -12,7 +12,7 @@ const DEFAULT_POINTER: &str = ">";
 const DEFAULT_BORDER_LABEL: &str = "";
 const DEFAULT_HEADER: &str = "";
 
-#[derive(Builder)]
+#[derive(Debug, Builder)]
 /// Struct that represents the `fzf` program
 pub struct Fzf {
     #[builder(setter(skip))]
