@@ -1,5 +1,7 @@
 //! This module contains the enum's that represent certain `fzf` cli options
 
+// TODO: Impelemnt TryFrom trait for options
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 /// Enum to represent the scoring schemes fzf can use
 pub enum Scheme {
