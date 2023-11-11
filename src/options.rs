@@ -31,7 +31,7 @@ impl From<String> for Scheme {
             "default" => Self::Default,
             "path" => Self::Path,
             "history" => Self::History,
-            _ => Self::Default,
+            _ => Self::default(),
         }
     }
 }
@@ -70,7 +70,7 @@ impl From<String> for Color {
             "light" => Self::Light,
             "16" | "sixteen" => Self::Sixteen,
             "bw" => Self::Bw,
-            _ => Self::Dark,
+            _ => Self::default(),
         }
     }
 }
@@ -106,7 +106,7 @@ impl From<String> for Layout {
             "default" => Layout::Default,
             "reverse" => Layout::Reverse,
             "reverse-list" => Layout::ReverseList,
-            _ => Layout::Default,
+            _ => Layout::default(),
         }
     }
 }
@@ -160,7 +160,7 @@ impl From<String> for Border {
             "bottom" => Border::Bottom,
             "left" => Border::Left,
             "right" => Border::Right,
-            _ => Border::None,
+            _ => Border::default(),
         }
     }
 }
