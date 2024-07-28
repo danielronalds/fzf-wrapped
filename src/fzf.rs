@@ -233,12 +233,13 @@ impl Fzf {
     ///
     /// The stdout of fzf is converted to a string using `from_utf8_lossy`
     ///
-    /// **Blocks execution until output is received**
+    /// **NOTE: Blocks execution until output is received**
     ///
     /// # Returns
     ///
     /// An option containing the users selection as a [`String`], or `None` if the user quit `fzf`
     pub fn output(self) -> Option<String> {
+        drop(self.stdin);
         let output = self.instance?.wait_with_output().ok()?;
         Some(String::from_utf8_lossy(&output.stdout).trim().to_string())
     }
